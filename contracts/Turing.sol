@@ -9,7 +9,7 @@ contract Turing is ERC20 {
     bool public votingEnabled = true;
 
     mapping(string => address) public codinomeToAddress;
-    mapping(address => mapping(string => bool)) public hasVoted; // Agora é um mapping para registrar votos por codinome
+    mapping(address => mapping(string => bool)) public hasVoted;
 
     modifier onlyOwnerOrProfessor() {
         require(
@@ -41,9 +41,7 @@ contract Turing is ERC20 {
     }
 
     constructor() ERC20("Turing", "TUR") {
-        owner = msg.sender; // Define o deployer como owner
-        // Preenchendo os codinomes e endereços
-        codinomeToAddress["gustavo"] = msg.sender;
+        owner = msg.sender;
         codinomeToAddress["nome1"] = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
         codinomeToAddress["nome2"] = 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC;
         codinomeToAddress["nome3"] = 0x90F79bf6EB2c4f870365E785982E1f101E93b906;
@@ -105,13 +103,10 @@ contract Turing is ERC20 {
 
         address recipient = codinomeToAddress[codinome];
 
-        // Mint the voting amount for the recipient
         _mint(recipient, amount);
 
-        // Reward the voter with 0.2 TUR
         _mint(msg.sender, 0.2 * 10 ** 18);
 
-        // Mark as voted for this codinome
         hasVoted[msg.sender][codinome] = true;
     }
 
