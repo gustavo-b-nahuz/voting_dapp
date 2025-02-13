@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import TuringArtifact from "./artifacts/contracts/Turing.sol/Turing.json";
 
-const tokenAddress = "0x4238787a8737d77808783d1b316b71fd71573969";
+const tokenAddress = "0x4adef9a6f7ebeb4e8f0f571c89a6db451f3251c5";
 
 function App() {
     const [provider, setProvider] = useState(null);
@@ -88,12 +88,27 @@ function App() {
     }
 
     async function handleVote() {
-        if (!selectedCodinome || !amount)
+        if (!selectedCodinome || !amount) {
             return alert("Selecione um codinome e insira um valor.");
+        }
 
-        const saTurings = ethers.utils.parseUnits(amount, 18);
-        await contract.vote(selectedCodinome, saTurings);
-        alert(`Voto registrado para ${selectedCodinome}!`);
+        try {
+            const saTurings = ethers.utils.parseUnits(amount, 18);
+            await contract.vote(selectedCodinome, saTurings);
+            alert(`Voto registrado para ${selectedCodinome}!`);
+        } catch (error) {
+            console.error("Erro ao votar:", error);
+            // Exibe uma mensagem amigável com base no tipo de erro
+            if (error.reason) {
+                alert(`Erro ao votar: ${error.reason}`);
+            } else if (error.data && error.data.message) {
+                alert(`Erro ao votar: ${error.data.message}`);
+            } else {
+                alert(
+                    "Erro desconhecido ao votar. Veja o console para mais detalhes."
+                );
+            }
+        }
     }
 
     async function toggleVoting(state) {
