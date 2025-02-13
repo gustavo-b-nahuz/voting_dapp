@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import TuringArtifact from "./artifacts/contracts/Turing.sol/Turing.json";
 
-const tokenAddress = "0x4adef9a6f7ebeb4e8f0f571c89a6db451f3251c5";
+const tokenAddress = "0x18c770023590bfc357ec4b516cc5aee53a851e82";
 
 function App() {
     const [provider, setProvider] = useState(null);
@@ -78,18 +78,37 @@ function App() {
         connectMetaMask();
     }, []);
 
-    async function handleIssueToken() {
-        if (!selectedCodinome || !amount)
-            return alert("Selecione um codinome e insira um valor.");
+    // Função para validar se o codinome está na lista
+    function isValidCodinome(codinome) {
+        return codinomes.includes(codinome);
+    }
 
-        const saTurings = ethers.utils.parseUnits(amount, 18);
-        await contract.issueToken(selectedCodinome, saTurings);
-        alert(`Tokens emitidos para ${selectedCodinome}!`);
+    async function handleIssueToken() {
+        if (!selectedCodinome || !amount) {
+            return alert("Selecione um codinome e insira um valor.");
+        }
+
+        if (!isValidCodinome(selectedCodinome)) {
+            return alert("Codinome inválido. Escolha um codinome da lista.");
+        }
+
+        try {
+            const saTurings = ethers.utils.parseUnits(amount, 18);
+            await contract.issueToken(selectedCodinome, saTurings);
+            alert(`Tokens emitidos para ${selectedCodinome}!`);
+        } catch (error) {
+            console.error("Erro ao emitir tokens:", error);
+            alert("Erro ao emitir tokens. Veja o console para mais detalhes.");
+        }
     }
 
     async function handleVote() {
         if (!selectedCodinome || !amount) {
             return alert("Selecione um codinome e insira um valor.");
+        }
+
+        if (!isValidCodinome(selectedCodinome)) {
+            return alert("Codinome inválido. Escolha um codinome da lista.");
         }
 
         try {
@@ -98,7 +117,6 @@ function App() {
             alert(`Voto registrado para ${selectedCodinome}!`);
         } catch (error) {
             console.error("Erro ao votar:", error);
-            // Exibe uma mensagem amigável com base no tipo de erro
             if (error.reason) {
                 alert(`Erro ao votar: ${error.reason}`);
             } else if (error.data && error.data.message) {
@@ -142,16 +160,11 @@ function App() {
 
                 <div>
                     <h3>Emitir Tokens</h3>
-                    <select
+                    <input
+                        type="text"
+                        placeholder="Digite o codinome"
                         onChange={(e) => setSelectedCodinome(e.target.value)}
-                    >
-                        <option value="">Selecione um Codinome</option>
-                        {codinomes.map((codinome) => (
-                            <option key={codinome} value={codinome}>
-                                {codinome}
-                            </option>
-                        ))}
-                    </select>
+                    />
                     <input
                         type="number"
                         placeholder="Digite a quantidade de Turings"
@@ -162,16 +175,11 @@ function App() {
 
                 <div>
                     <h3>Votar</h3>
-                    <select
+                    <input
+                        type="text"
+                        placeholder="Digite o codinome"
                         onChange={(e) => setSelectedCodinome(e.target.value)}
-                    >
-                        <option value="">Selecione um Codinome</option>
-                        {codinomes.map((codinome) => (
-                            <option key={codinome} value={codinome}>
-                                {codinome}
-                            </option>
-                        ))}
-                    </select>
+                    />
                     <input
                         type="number"
                         placeholder="Digite a quantidade de Turings"
