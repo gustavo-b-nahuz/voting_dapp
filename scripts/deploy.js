@@ -1,7 +1,6 @@
 const hre = require("hardhat");
 
 async function main() {
-    // ethers is avaialble in the global scope
     const [deployer] = await hre.ethers.getSigners();
     console.log(
         "Deploying the contracts with the account:",

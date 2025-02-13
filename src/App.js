@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import TuringArtifact from "./artifacts/contracts/Turing.sol/Turing.json";
 
-const tokenAddress = "0x4238787a8737d77808783d1b316b71fd71573969"; // Atualize com o endereço do contrato implantado
+const tokenAddress = "0x4238787a8737d77808783d1b316b71fd71573969";
 
 function App() {
     const [provider, setProvider] = useState(null);
@@ -24,18 +24,15 @@ function App() {
             }
 
             try {
-                // Solicitar ao usuário para conectar sua conta MetaMask
                 const accounts = await window.ethereum.request({
                     method: "eth_requestAccounts",
                 });
 
-                // Criar o provider e signer a partir do MetaMask
                 const metaMaskProvider = new ethers.providers.Web3Provider(
                     window.ethereum
                 );
                 const metaMaskSigner = metaMaskProvider.getSigner();
 
-                // Criar instância do contrato
                 const turingContract = new ethers.Contract(
                     tokenAddress,
                     TuringArtifact.abi,
@@ -46,10 +43,8 @@ function App() {
                 setSigner(metaMaskSigner);
                 setContract(turingContract);
 
-                // Exibir a conta conectada no console
                 console.log("Conectado à MetaMask com a conta:", accounts[0]);
 
-                // Definir os codinomes manualmente
                 const codinomeList = [
                     "nome1",
                     "nome2",
@@ -121,7 +116,7 @@ function App() {
                 balance: ethers.utils.formatUnits(balance, 18),
             });
         }
-        balances.sort((a, b) => b.balance - a.balance); // Ordenar por saldo (decrescente)
+        balances.sort((a, b) => b.balance - a.balance);
         setRanking(balances);
     }
 
