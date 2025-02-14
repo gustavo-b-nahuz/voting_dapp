@@ -127,12 +127,20 @@ function App() {
     }
 
     async function toggleVoting(state) {
-        if (state === "on") {
-            await contract.votingOn();
-            alert("Votação ativada!");
-        } else {
-            await contract.votingOff();
-            alert("Votação desativada!");
+        try {
+            if (state === "on") {
+                await contract.votingOn();
+                alert("Votação ativada!");
+            } else {
+                await contract.votingOff();
+                alert("Votação desativada!");
+            }
+        } catch (error) {
+            if (error.data) {
+                alert(error.data.message);
+            }
+
+            console.error("Erro ao ativar/desativar:", error);
         }
     }
 
