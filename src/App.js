@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useState, useEffect } from "react";
 import TuringArtifact from "./artifacts/contracts/Turing.sol/Turing.json";
 
-const tokenAddress = "0x18c770023590bfc357ec4b516cc5aee53a851e82";
+const tokenAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 function App() {
     const [provider, setProvider] = useState(null);
@@ -97,8 +97,11 @@ function App() {
             await contract.issueToken(selectedCodinome, saTurings);
             alert(`Tokens emitidos para ${selectedCodinome}!`);
         } catch (error) {
+            if (error.data) {
+                alert(error.data.message);
+            }
+
             console.error("Erro ao emitir tokens:", error);
-            alert("Erro ao emitir tokens. Veja o console para mais detalhes.");
         }
     }
 
@@ -117,14 +120,8 @@ function App() {
             alert(`Voto registrado para ${selectedCodinome}!`);
         } catch (error) {
             console.error("Erro ao votar:", error);
-            if (error.reason) {
-                alert(`Erro ao votar: ${error.reason}`);
-            } else if (error.data && error.data.message) {
-                alert(`Erro ao votar: ${error.data.message}`);
-            } else {
-                alert(
-                    "Erro desconhecido ao votar. Veja o console para mais detalhes."
-                );
+            if (error.data) {
+                alert(error.data.message);
             }
         }
     }
